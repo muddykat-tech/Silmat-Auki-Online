@@ -1,0 +1,79 @@
+<!-- menu.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='resources/images/icon.png') }}">
+    <title>{% block title %}Silmat Auki{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/" style="margin-left: 10px;">Silmat Auki</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="basicAnalysisLink">Basic Message Analysis</a> <!-- Updated link -->
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="trigramAnalysisLink">Trigram Message Analysis</a> <!-- Updated link -->
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="isochainAnalysisLink">Isochain Message Analysis</a> <!-- Updated link -->
+            </li>
+        </ul>
+    </div>
+
+    <img src="{{ url_for('static', filename='resources/images/icon.png') }}" alt="Silmat Icon" style="margin-right: 10px; transform: scaleX(-1);">
+</nav>
+
+{% block content %}
+{% endblock %}
+
+<script>
+    // Use jQuery noConflict to avoid conflicts with other libraries
+    jQuery.noConflict();
+    // Use jQuery(document).ready() instead of $(document).ready() to ensure compatibility
+    jQuery(document).ready(function($) {
+        // Function to fetch content via AJAX
+        function fetchContent(url) {
+            $.ajax({
+                type: "GET",
+                url: url,  // Specify the endpoint to handle the AJAX request
+                success: function(data) {
+                    $("body").html(data);  // Replace the body content with the fetched data on success
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching content:", error);
+                }
+            });
+        }
+
+        // Handle click event of Basic Message Analysis link
+        $("#basicAnalysisLink").click(function(e) {
+            e.preventDefault();  // Prevent the default action
+            fetchContent("/basic_analysis");  // Fetch content for Basic Message Analysis
+        });
+
+        // Handle click event of Trigram Message Analysis link
+        $("#trigramAnalysisLink").click(function(e) {
+            e.preventDefault();  // Prevent the default action
+            fetchContent("/trigram_analysis");  // Fetch content for Trigram Message Analysis
+        });
+
+        // Handle click event of Isochain Message Analysis link
+        $("#isochainAnalysisLink").click(function(e) {
+            e.preventDefault();  // Prevent the default action
+            fetchContent("/isochain_analysis");  // Fetch content for Isochain Message Analysis
+        });
+    });
+</script>
+
+</body>
+</html>

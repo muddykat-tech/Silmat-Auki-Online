@@ -1,0 +1,32 @@
+<!-- basic_message_analysis.html -->
+{% extends 'html-pages/menu.html' %}
+
+{% block title %}Basic Message Analysis{% endblock %}
+
+{% block content %}
+{% for i in range(number_of_panes) %}
+<div class="dropdown">
+    <button class="dropbtn" id="dropdown-btn-{{ i }}">Select Message</button>
+    <div class="dropdown-content" id="dropdown-content-{{ i }}">
+        {% for key, value in Messages.__members__.items() %}
+        <a href="#" data-key="{{ key }}">{{ value.value }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="eye_message_content_pane_{{ i }}" class="eye-message-pane">
+    <!-- Eye message content will be dynamically inserted here -->
+</div>
+<div id="eye_message_editor_pane_{{ i }}" class="eye-editor-pane">
+    <label>
+        <textarea class="editor-textarea" placeholder="Type your text here..."></textarea>
+    </label>
+</div>
+
+
+
+{% endfor %}
+
+<script src="../../static/js/basic_message_analysis.js"></script>
+
+{% endblock %}
