@@ -16,9 +16,6 @@ document.querySelectorAll('.dropdown').forEach(function(dropDown, index) {
             dropBtn.textContent = selectedValue;
             dropDownContent.classList.remove('show');
 
-            var textarea = document.querySelector(".editor-textarea");
-            textarea.value = selectedValue;
-
             // Perform AJAX request to fetch message content
             fetch('/basic_analysis', {
                 method: 'POST',
