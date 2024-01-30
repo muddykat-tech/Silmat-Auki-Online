@@ -103,6 +103,8 @@ body {
 }
 
 .dropdown,
+.dropdown-msg,
+.dropdown-mode,
 .dropbtn {
     display: flex;
     justify-content: center;
@@ -174,4 +176,8 @@ th {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     width: 100%;
     padding: 1%;
+}
+
+.button-container {
+    display: flex;
 }

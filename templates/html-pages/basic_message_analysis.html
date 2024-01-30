@@ -5,14 +5,26 @@
 
 {% block content %}
 {% for i in range(number_of_panes) %}
-<div class="dropdown">
-    <button class="dropbtn" id="dropdown-btn-{{ i }}">Select Message</button>
-    <div class="dropdown-content" id="dropdown-content-{{ i }}">
-        {% for key, value in Messages.__members__.items() %}
-        <a href="#" data-key="{{ key }}">{{ value.value }}</a>
-        {% endfor %}
+<div class="button-container">
+    <div class="dropdown">
+        <button class="dropbtn" id="dropdown-btn-{{ i }}">Select Message</button>
+        <div class="dropdown-content" id="dropdown-content-{{ i }}">
+            {% for key, value in Messages.__members__.items() %}
+            <a href="#" data-key="{{ key }}">{{ value.value }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropbtn" id="trigram-dropdown-btn-{{ i }}">Select Trigram Read Mode</button>
+        <div class="dropdown-content" id="trigram-dropdown-content-{{ i }}" selected-mode="TrigramReadMode.ACB">
+            {% for mode in trigram_modes %}
+            <a href="#" data-mode="{{ mode }}">Read Mode: {{ mode.value }}</a>
+            {% endfor %}
+        </div>
     </div>
 </div>
+
 
 <div id="eye_message_content_pane_{{ i }}" class="eye-message-pane">
     <!-- Eye message content will be dynamically inserted here -->
