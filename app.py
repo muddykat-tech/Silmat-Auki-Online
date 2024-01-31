@@ -1,6 +1,10 @@
+import http.server
+
 from flask import Flask, jsonify, request, render_template
 from modules.basic_message_analysis import basic_analysis_page, analyze_message_content, messages, Message, \
     generate_message_html
+
+from gevent.pywsgi import WSGIServer
 
 certfile = r'C:/Certbot/archive/silmat-auki.com/cert1.pem'
 keyfile = r'C:/Certbot/archive/silmat-auki.com/privkey1.pem'
@@ -26,5 +30,8 @@ def trigram():
 def isochain():
     return render_template('html-pages/isochain_message_analysis.html')
 
+
 if __name__ == '__main__':
-    app.run(host="192.168.1.41", port=443, ssl_context=(certfile, keyfile))
+    # app.run(host="192.168.1.41", port=443, ssl_context=(certfile, keyfile))
+    http_server = WSGIServer(('192.168.1.41', 443), app, keyfile=keyfile, certfile=certfile)
+    http_server.serve_forever()
