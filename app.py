@@ -1,10 +1,7 @@
-import http.server
-
-from flask import Flask, jsonify, request, render_template
-from modules.basic_message_analysis import basic_analysis_page, analyze_message_content, messages, Message, \
-    generate_message_html
-
+from flask import Flask, render_template
 from gevent.pywsgi import WSGIServer
+
+from modules.basic_message_analysis import basic_analysis_page
 
 certfile = r'C:/Certbot/archive/silmat-auki.com/cert1.pem'
 keyfile = r'C:/Certbot/archive/silmat-auki.com/privkey1.pem'
