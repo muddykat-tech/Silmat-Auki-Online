@@ -96,6 +96,7 @@ body {
 .offset-images {
     width: 26px;
     height: 18px;
+    z-index: 0;
 }
 
 .offset-images {
@@ -114,6 +115,7 @@ body {
     height: auto;
     padding: 20px;
     margin: 0 auto;
+    z-index: 6;
 }
 
 .dropbtn {
@@ -127,6 +129,7 @@ body {
     text-transform: uppercase;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
+    z-index: 0 !important;
 }
 
 .dropbtn:hover {
@@ -199,4 +202,5 @@ th {
     position: absolute;
     width: 51px !important;
     height: 35px;
+    z-index: 1;
 }

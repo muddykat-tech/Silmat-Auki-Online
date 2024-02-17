@@ -69,10 +69,10 @@ def generate_message_html(analyzed_content, original_message):
             html += f'<img src={image_path}>'
             if i % 2 == 0:
                 if j % 3 == 0:
-                    html += f'<img class="overlay-image" style="transform: translateX(-26px) translateY(2px);" src={trigram_selection_path} alt="{trigram_val_list.__getitem__(trigram_index)}">'
+                    html += f'<img class="overlay-image" style="transform: translateX(-26px) translateY(2px);" src={trigram_selection_path} title="{trigram_val_list.__getitem__(trigram_index)}">'
                     trigram_index = min(trigram_index + 1, len(trigram_val_list)-1)
                 if j % 3 == 1 and j != len(line_images)-1:
-                    html += f'<img class="overlay-image-flipped" style="transform: translateX(-12px) translateY(2px) rotate(180deg);" src={trigram_selection_path} alt="{trigram_val_list.__getitem__(trigram_index)}">'
+                    html += f'<img class="overlay-image-flipped" style="transform: translateX(-12px) translateY(2px) rotate(180deg);" src={trigram_selection_path} title="{trigram_val_list.__getitem__(trigram_index)}">'
                     trigram_index = min(trigram_index + 1, len(trigram_val_list)-1)
 
         html += '</div>'
