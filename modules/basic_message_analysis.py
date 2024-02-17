@@ -44,21 +44,37 @@ def analyze_message_content(message_content):
     return analyzed_content
 
 
+trigram_selection_path = f"static/resources/images/silmat-trigram-overlay.png"
+
+
 def generate_message_html(analyzed_content, original_message):
-    html = '<table><tr><th>'
-    html += '<div class="eye-images-container">'
-    for i, line_images in enumerate(analyzed_content):
-        html += '<div class="offset-images">' if i % 2 == 1 else '<div class="eye-images">'
-        for j, image_path in enumerate(line_images):
-            # Remove the leading forward slash from image_path
-            html += f'<img src={image_path}>'
-        html += '</div>'
-    html += '</div></th></tr><tr><th>'
     # Add the editor pane for text editing
     plaintext_message = original_message.replace("5", "\n")
     eye_data = EyeData("data", original_message, selected_mode)
     trigram_message = eye_data.get_raw_trigram_data()
     ascii_message = eye_data.get_trigram_values()
+
+    html = '<table><tr><th>'
+    html += '<div class="eye-images-container">'
+    trigram_index = 0
+    for i, line_images in enumerate(analyzed_content):
+        html += '<div class="offset-images">' if i % 2 == 1 else '<div class="eye-images">'
+        for j, image_path in enumerate(line_images):
+            # Remove the leading forward slash from image_path
+            html += f'<img src={image_path}>'
+            if i % 2 == 0:
+
+                trigram_val_list = trigram_message.replace("\n",",").split(",")
+
+                if j % 3 == 0:
+                    html += f'<img class="overlay-image" style="transform: translateX(-26px) translateY(2px);" src={trigram_selection_path} alt="{trigram_val_list.__getitem__(trigram_index)}">'
+                    trigram_index = min(trigram_index + 1, len(trigram_val_list)-1)
+                if j % 3 == 1 and j != len(line_images)-1:
+                    html += f'<img class="overlay-image-flipped" style="transform: translateX(-12px) translateY(2px) rotate(180deg);" src={trigram_selection_path} alt="{trigram_val_list.__getitem__(trigram_index)}">'
+                    trigram_index = min(trigram_index + 1, len(trigram_val_list)-1)
+
+        html += '</div>'
+    html += '</div></th></tr><tr><th>'
 
     # Direct Message Data
     html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{plaintext_message}</textarea></label></div>'

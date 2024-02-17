@@ -29,6 +29,6 @@ def isochain():
 
 
 if __name__ == '__main__':
-    # app.run(host="192.168.1.41", port=443, ssl_context=(certfile, keyfile))
-    http_server = WSGIServer(('192.168.1.41', 443), app, keyfile=keyfile, certfile=certfile)
-    http_server.serve_forever()
+    app.run(host="192.168.1.41", port=80)
+    # http_server = WSGIServer(('192.168.1.41', 443), app, keyfile=keyfile, certfile=certfile)
+    # http_server.serve_forever()

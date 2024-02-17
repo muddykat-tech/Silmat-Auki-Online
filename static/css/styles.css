@@ -171,6 +171,8 @@ th {
 
 .eye-images-container {
     background-color: #fff;
+
+    position: relative;
     border: 2px solid #000;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -180,4 +182,21 @@ th {
 
 .button-container {
     display: flex;
+}
+
+.overlay-image {
+    filter: brightness(50%) !important;
+    color: red !important;
+    position: absolute;
+    width: 52px !important;
+    height: 36px;
+}
+
+.overlay-image-flipped {
+    -webkit-filter: hue-rotate(180deg) brightness(70%) !important;
+            filter: hue-rotate(180deg) brightness(70%) !important;
+    : blue !important;
+    position: absolute;
+    width: 51px !important;
+    height: 35px;
 }
