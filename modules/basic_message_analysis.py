@@ -15,6 +15,7 @@ class Message(Enum):
     EAST_4 = "East 4"
     WEST_4 = "West 4"
     EAST_5 = "East 5"
+    EW = "EAST 1 + WEST 1 Modulo 5, Keeping East1 Line Breaks"
 
 
 messages = {
@@ -26,7 +27,9 @@ messages = {
     Message.WEST_3: "1110143040440231010332321201132400320235432041002342120301441212222401420211130503303113422414411130300314223404213111254314132002101412021124312302031114300215103133214200230011143034143033110122120510113221112044231013132123102031102220051201201231300110240141330210230022200445210312220001440122003232142141332131220512022402223420303312024404020050021211001411022421034024114425",
     Message.EAST_4: "1010143040001000000102132331201421330035232041002222431212430430300110203421130510100422321003430014421422402220030002253034110223132024033020302224411420101415143234300120242230110301302001040030130501233240134134130244130141241222230332252122221431303020131021131022300031032325432331411032403200122103112431440120231512202423010131123221303534212102201003230340345",
     Message.WEST_4: "3010143040001000000102132331201400400025232041002222431212430430300110222113142521131021400103212224112430010013122331350302212301323014304134203000323324211405040210240103202210243021012103012033232540221110313241210214244031112202143114152042332412033020233010412042410122321015311140311421232122410240132440030221440522431411404212111414013050202310000310001021400115",
-    Message.EAST_5: "1110143040001000000102132331201430441335332041002222431212430430300110211112430510121422330202401414421222223021221323353034110224012020413020022424202403412025014110114103111010240110204010013100130521121113011044121111240341012204004121351020410412211341301330132430110420102215020203002240010120442311042111142031102513122422022204152324421013314315"
+    Message.EAST_5: "1110143040001000000102132331201430441335332041002222431212430430300110211112430510121422330202401414421222223021221323353034110224012020413020022424202403412025014110114103111010240110204010013100130521121113011044121111240341012204004121351020410412211341301330132430110420102215020203002240010120442311042111142031102513122422022204152324421013314315",
+    Message.EW: "01202144110303221041422312101100304300450140324400023444342444402200014021322145330422033000304143030233234011044013322534202121003223414023441211233213233211252212210103031302343412104124220300030445443212333013233441220341033203113222034510240441202301132311334422224132514002223204024112404013404042305"
+
 }
 
 selected_mode = TrigramReadMode.ACB
@@ -57,15 +60,14 @@ def generate_message_html(analyzed_content, original_message):
     html = '<table><tr><th>'
     html += '<div class="eye-images-container">'
     trigram_index = 0
+    trigram_val_list = trigram_message.replace("\n",",").split(",")
+
     for i, line_images in enumerate(analyzed_content):
         html += '<div class="offset-images">' if i % 2 == 1 else '<div class="eye-images">'
         for j, image_path in enumerate(line_images):
             # Remove the leading forward slash from image_path
             html += f'<img src={image_path}>'
             if i % 2 == 0:
-
-                trigram_val_list = trigram_message.replace("\n",",").split(",")
-
                 if j % 3 == 0:
                     html += f'<img class="overlay-image" style="transform: translateX(-26px) translateY(2px);" src={trigram_selection_path} alt="{trigram_val_list.__getitem__(trigram_index)}">'
                     trigram_index = min(trigram_index + 1, len(trigram_val_list)-1)
@@ -77,17 +79,29 @@ def generate_message_html(analyzed_content, original_message):
     html += '</div></th></tr><tr><th>'
 
     # Direct Message Data
-    html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{plaintext_message}</textarea></label></div>'
-
-    # Direct Trigram Data
     html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{trigram_message}</textarea></label></div>'
 
-    # Direct Ascii Data
+    # Direct Trigram Data
     html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{ascii_message}</textarea></label></div>'
+
+    # Direct Ascii Data
+    html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{convert_decimal_to_ascii(ascii_message)}</textarea></label></div>'
 
     html += '</th></tr></table>'
     return html
 
+
+def convert_decimal_to_ascii(primary_data):
+    new_data = ""
+
+    lines = primary_data.split("\n")
+    for line in lines:
+        values = line.split(",")
+        for value in values:
+            new_data += chr(int(value) + 32)
+        new_data += "\n"
+
+    return new_data
 
 def analyze_messages():
     analyzed_messages = {}
