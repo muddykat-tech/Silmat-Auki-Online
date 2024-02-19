@@ -36,7 +36,7 @@ messages = {
 
 selected_mode = TrigramReadMode.ACB
 selected_message = Message.EAST_1.name
-selected_output = TrigramOutput.ASCII
+selected_output = TrigramOutput.ASCII32
 
 
 def analyze_message_content(message_content):
@@ -53,7 +53,7 @@ def analyze_message_content(message_content):
 trigram_selection_path = f"static/resources/images/silmat-trigram-overlay.png"
 
 
-def generate_message_html(analyzed_content, original_message, output_type=TrigramOutput.ASCII):
+def generate_message_html(analyzed_content, original_message, output_type=TrigramOutput.ASCII32):
     # Add the editor pane for text editing
     plaintext_message = original_message.replace("5", "\n")
     eye_data = EyeData("data", original_message, selected_mode)
@@ -95,17 +95,17 @@ def generate_message_html(analyzed_content, original_message, output_type=Trigra
 
 
 def convert_output(input, output_type):
-    return convert_decimal_to_base64(input) if output_type == TrigramOutput.BASE64 else convert_decimal_to_ascii(input)
+    return convert_decimal_to_base64(input) if output_type == TrigramOutput.BASE64 else convert_decimal_to_ascii(input) if output_type == TrigramOutput.ASCII32 else convert_decimal_to_ascii(input, 33)
 
 
-def convert_decimal_to_ascii(primary_data):
+def convert_decimal_to_ascii(primary_data, shift=32):
     new_data = ""
 
     lines = primary_data.split("\n")
     for line in lines:
         values = line.split(",")
         for value in values:
-            new_data += chr(int(value) + 32)
+            new_data += chr(int(value) + shift)
         new_data += "\n"
 
     return new_data

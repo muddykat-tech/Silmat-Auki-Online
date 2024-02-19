@@ -2,7 +2,8 @@ from enum import Enum
 
 
 class TrigramOutput(Enum):
-    ASCII = "ASCII",
+    ASCII32 = "ASCII32",
+    ASCII33 = "ASCII33"
     BASE64 = "BASE64"
 
 
