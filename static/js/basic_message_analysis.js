@@ -15,8 +15,11 @@ function handleOptionClick(event) {
 
   let selectedKey = option.getAttribute('data-key');
   let selectedMode = option.getAttribute('data-mode');
-  console.log(selectedKey, selectedMode)
+  let selectedOutput = option.getAttribute('data-output');
+
+  console.log(selectedKey, selectedMode, selectedOutput)
   console.log(dropdownContent.id)
+
   if(dropdownContent.id === 'dropdown-content-' + dropdownId){
     selectedMode = document.getElementById('trigram-dropdown-content-' + dropdownId).getAttribute('selected-mode')
   } else {
@@ -35,7 +38,7 @@ function handleOptionClick(event) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ message: selectedKey, mode: selectedMode })
+    body: JSON.stringify({ message: selectedKey, mode: selectedMode, output: selectedOutput })
   })
   .then(response => response.text()) // Convert response to text
   .then(data => {

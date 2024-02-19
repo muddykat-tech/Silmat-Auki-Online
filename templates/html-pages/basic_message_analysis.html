@@ -23,6 +23,15 @@
             {% endfor %}
         </div>
     </div>
+
+    <div class="dropdown">
+        <button class="dropbtn" id="output-dropdown-btn-{{ i }}">Select Trigram Output Mode</button>
+        <div class="dropdown-content" id="output-dropdown-content-{{ i }}" selected-output="TrigramOutput.ASCII">
+            {% for output in trigram_outputs %}
+            <a href="#" data-output="{{ output }}">Output Mode: {{ output.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 

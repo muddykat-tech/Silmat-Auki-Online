@@ -1,8 +1,10 @@
 # basic_message_analysis.py
+import base64
+
 from flask import render_template, request, jsonify
 from enum import Enum
 from static.python import trigram_helper
-from static.python.trigram_helper import TrigramReadMode, EyeData
+from static.python.trigram_helper import TrigramReadMode, EyeData, TrigramOutput
 
 
 class Message(Enum):
@@ -34,6 +36,7 @@ messages = {
 
 selected_mode = TrigramReadMode.ACB
 selected_message = Message.EAST_1.name
+selected_output = TrigramOutput.ASCII
 
 
 def analyze_message_content(message_content):
@@ -50,17 +53,17 @@ def analyze_message_content(message_content):
 trigram_selection_path = f"static/resources/images/silmat-trigram-overlay.png"
 
 
-def generate_message_html(analyzed_content, original_message):
+def generate_message_html(analyzed_content, original_message, output_type=TrigramOutput.ASCII):
     # Add the editor pane for text editing
     plaintext_message = original_message.replace("5", "\n")
     eye_data = EyeData("data", original_message, selected_mode)
     trigram_message = eye_data.get_raw_trigram_data()
-    ascii_message = eye_data.get_trigram_values()
+    base10_message = eye_data.get_trigram_values()
 
     html = '<table><tr><th>'
     html += '<div class="eye-images-container">'
     trigram_index = 0
-    trigram_val_list = trigram_message.replace("\n",",").split(",")
+    trigram_val_list = trigram_message.replace("\n", ",").split(",")
 
     for i, line_images in enumerate(analyzed_content):
         html += '<div class="offset-images">' if i % 2 == 1 else '<div class="eye-images">'
@@ -70,10 +73,10 @@ def generate_message_html(analyzed_content, original_message):
             if i % 2 == 0:
                 if j % 3 == 0:
                     html += f'<img class="overlay-image" style="transform: translateX(-26px) translateY(2px);" src={trigram_selection_path} title="{trigram_val_list.__getitem__(trigram_index)}">'
-                    trigram_index = min(trigram_index + 1, len(trigram_val_list)-1)
-                if j % 3 == 1 and j != len(line_images)-1:
+                    trigram_index = min(trigram_index + 1, len(trigram_val_list) - 1)
+                if j % 3 == 1 and j != len(line_images) - 1:
                     html += f'<img class="overlay-image-flipped" style="transform: translateX(-12px) translateY(2px) rotate(180deg);" src={trigram_selection_path} title="{trigram_val_list.__getitem__(trigram_index)}">'
-                    trigram_index = min(trigram_index + 1, len(trigram_val_list)-1)
+                    trigram_index = min(trigram_index + 1, len(trigram_val_list) - 1)
 
         html += '</div>'
     html += '</div></th></tr><tr><th>'
@@ -82,13 +85,17 @@ def generate_message_html(analyzed_content, original_message):
     html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{trigram_message}</textarea></label></div>'
 
     # Direct Trigram Data
-    html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{ascii_message}</textarea></label></div>'
+    html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{base10_message}</textarea></label></div>'
 
     # Direct Ascii Data
-    html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{convert_decimal_to_ascii(ascii_message)}</textarea></label></div>'
+    html += f'<div id="eye_editor_pane" class="eye-editor-pane"><label><textarea wrap="off" class="editor-textarea">{convert_output(base10_message, output_type)}</textarea></label></div>'
 
     html += '</th></tr></table>'
     return html
+
+
+def convert_output(input, output_type):
+    return convert_decimal_to_base64(input) if output_type == TrigramOutput.BASE64 else convert_decimal_to_ascii(input)
 
 
 def convert_decimal_to_ascii(primary_data):
@@ -103,6 +110,7 @@ def convert_decimal_to_ascii(primary_data):
 
     return new_data
 
+
 def analyze_messages():
     analyzed_messages = {}
     for message, content in messages.items():
@@ -112,24 +120,51 @@ def analyze_messages():
     return analyzed_messages
 
 
+def convert_decimal_to_base64(primary_data):
+    try:
+        # Convert string of numbers to bytes
+        bytes_data = bytes(map(int, primary_data.replace('\n', ',').split(',')))
+
+        # Encode bytes to Base64
+        base64_data = base64.b64encode(bytes_data)
+        output_string = base64_data.decode()
+
+        # Insert '\n' at evenly spaced intervals
+        num_newlines = 4
+        interval = len(output_string) // (num_newlines + 1)
+        for i in range(num_newlines):
+            output_string = output_string[:interval * (i + 1) + i] + '\n' + output_string[interval * (i + 1) + i:]
+
+        return output_string
+    except Exception as e:
+        print("Error:", e)
+        return None
+
+
 def basic_analysis_page():
     number_of_panes = 3  # Define the number of panes
     if request.method == 'POST':
         message = request.json.get('message')
         mode = request.json.get('mode')
+        output = request.json.get('output')
 
-        global selected_message
+        global selected_message, selected_output
 
         if mode is not None:
             global selected_mode
             selected_mode = TrigramReadMode[mode.split('.')[-1]]
+
         if message is not None:
             selected_message = message
 
+        if output is not None:
+            selected_output = TrigramOutput[output.split('.')[-1]]
+
         message_content = messages.get(Message[selected_message])
         analyzed_content = analyze_message_content(message_content)
-        html_content = generate_message_html(analyzed_content, message_content)
+        html_content = generate_message_html(analyzed_content, message_content, selected_output)
         return jsonify(html_content)
     else:
         return render_template('html-pages/basic_message_analysis.html', Messages=Message,
-                               number_of_panes=number_of_panes, trigram_modes=TrigramReadMode)
+                               number_of_panes=number_of_panes, trigram_modes=TrigramReadMode,
+                               trigram_outputs=TrigramOutput)

@@ -1,6 +1,11 @@
 from enum import Enum
 
 
+class TrigramOutput(Enum):
+    ASCII = "ASCII",
+    BASE64 = "BASE64"
+
+
 class TrigramReadMode(Enum):
     ACB = 'acb'
     ABC = 'abc'
